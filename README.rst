@@ -1,7 +1,24 @@
 Django Multilingual Survey
-============
+==========================
 
-Survey app that allows questions and answers to be created in several languages.
+Survey app that allows questions and answers to be created in several
+languages.
+
+Allows users to submit free text in an "other" field, if none of the choices
+are sufficient for the user. Users can even submit several custom answers to
+a question by submitting several comma separated values.
+
+Admins will get notified if a user submits a custom answer via the "other"
+field. They have an admin view that allows to accept, reject or rename the
+custom answer.
+
+This ensures that users who submit the same custom answer but with different
+spelling (i.e. "Vim" and "VIM") will ultimately get hooked up with the same
+unified SurveyAnswer object, which makes the creation of reports much easier
+and yields more accurate survey results.
+
+Questions and answers can be provided in several languages using
+`django-hvad <https://github.com/kristianoellegaard/django-hvad>`_
 
 Installation
 ------------
@@ -17,8 +34,6 @@ To get the latest commit from GitHub
 .. code-block:: bash
 
     pip install -e git+git://github.com/bitmazk/django-multilingual-survey.git#egg=multilingual_survey
-
-TODO: Describe further installation steps (edit / remove the examples below):
 
 Add ``multilingual_survey`` to your ``INSTALLED_APPS``
 
@@ -37,13 +52,6 @@ Add the ``multilingual_survey`` URLs to your ``urls.py``
         ...
         url(r'^survey/', include('multilingual_survey.urls')),
     )
-
-Before your tags/filters are available in your templates, load them by using
-
-.. code-block:: html
-
-	{% load multilingual_survey_tags %}
-
 
 Don't forget to migrate your database
 
