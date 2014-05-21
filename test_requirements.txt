@@ -2,6 +2,7 @@ django-nose
 coverage
 django-coverage
 django-jasmine
+django-libs
 ipdb
 flake8
 fabric

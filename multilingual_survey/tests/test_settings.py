@@ -1,7 +1,10 @@
 """Settings that need to be set in order to run the tests."""
 import os
+import logging
 
 DEBUG = True
+
+logging.getLogger("factory").setLevel(logging.WARN)
 
 SITE_ID = 1
 
@@ -48,6 +51,7 @@ EXTERNAL_APPS = [
     'django.contrib.sites',
     'django_jasmine',
     'django_nose',
+    'hvad',
 ]
 
 INTERNAL_APPS = [

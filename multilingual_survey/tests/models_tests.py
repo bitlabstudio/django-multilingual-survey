@@ -1,10 +1,11 @@
 """Tests for the models of the multilingual_survey app."""
 from django.test import TestCase
 
-# from .factories import YourModelFactory
+from . import factories
 
 
-class DummyTestCase(TestCase):
-    """Sample test case to show that `python setup.py test` works."""
-    def test_something(self):
-        self.assertTrue(True)
+class SurveyTestCase(TestCase):
+    """Tests for the ``Survey`` model."""
+    def test_model(self):
+        obj = factories.SurveyFactory()
+        self.assertTrue(obj.pk)
