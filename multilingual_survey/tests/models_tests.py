@@ -6,6 +6,17 @@ from . import factories
 
 class SurveyTestCase(TestCase):
     """Tests for the ``Survey`` model."""
+    longMessage = True
+
     def test_model(self):
         obj = factories.SurveyFactory()
+        self.assertTrue(obj.pk)
+
+
+class SurveyQuestionTestCase(TestCase):
+    """Tests for the ``SurveyQuestion`` model."""
+    longMessage = True
+
+    def test_model(self):
+        obj = factories.SurveyQuestionFactory()
         self.assertTrue(obj.pk)

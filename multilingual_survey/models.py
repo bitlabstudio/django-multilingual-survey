@@ -15,10 +15,43 @@ class Survey(TranslatableModel):
 
     """
     translations = TranslatedFields(
-        title=models.CharField(verbose_name=_('Name'), max_length=256)
+        title=models.CharField(verbose_name=_('Title'), max_length=256)
     )
 
     slug = models.SlugField(
         verbose_name=_('Slug'),
         max_length=256,
+    )
+
+
+class SurveyQuestion(TranslatableModel):
+    """
+    Belongs to a Survey and has several SurveyAnswers.
+
+    :title: The title of this question.
+    :content: An optional longer description of this question.
+    :survey: FK to Survey.
+    :is_multi_select: If ``True``, we will render checkboxes instead of
+      radiobuttons or a drop-down-list..
+    :position: Can be used to order questions in a survey.
+
+    """
+    translations = TranslatedFields(
+        title=models.CharField(verbose_name=_('Title'), max_length=256),
+        content=models.TextField(verbose_name=_('Content'))
+    )
+
+    survey = models.ForeignKey(
+        Survey,
+        verbose_name=_('Survey'),
+        related_name='questions',
+    )
+
+    is_multi_select = models.BooleanField(
+        verbose_name=_('Is multi-select'),
+        default=False,
+    )
+
+    position = models.PositiveIntegerField(
+        verbose_name=_('Position'),
     )

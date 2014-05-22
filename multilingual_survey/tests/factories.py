@@ -12,4 +12,15 @@ class SurveyFactory(HvadFactoryMixin, factory.DjangoModelFactory):
 
     language_code = 'en'
     slug = factory.Sequence(lambda n: 'slug{0}'.format(n))
-    name = factory.sequence(lambda n: 'name{0}'.format(n))
+    title = factory.Sequence(lambda n: 'name{0}'.format(n))
+
+
+class SurveyQuestionFactory(HvadFactoryMixin, factory.DjangoModelFactory):
+    """Factory for the ``Survey`` model."""
+    FACTORY_FOR = models.SurveyQuestion
+
+    language_code = 'en'
+    slug = factory.Sequence(lambda n: 'slug{0}'.format(n))
+    title = factory.Sequence(lambda n: 'name{0}'.format(n))
+    survey = factory.SubFactory(SurveyFactory)
+    position = factory.Sequence(lambda n: n)
