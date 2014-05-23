@@ -20,3 +20,12 @@ class SurveyQuestionTestCase(TestCase):
     def test_model(self):
         obj = factories.SurveyQuestionFactory()
         self.assertTrue(obj.pk)
+
+
+class SurveyAnswerTestCase(TestCase):
+    """Tests for the ``SurveyAnswer`` model."""
+    longMessage = True
+
+    def test_model(self):
+        obj = factories.SurveyAnswerFactory()
+        self.assertTrue(obj.pk)
