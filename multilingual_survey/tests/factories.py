@@ -34,3 +34,10 @@ class SurveyAnswerFactory(HvadFactoryMixin, factory.DjangoModelFactory):
     slug = factory.Sequence(lambda n: 'slug{0}'.format(n))
     title = factory.Sequence(lambda n: 'title{0}'.format(n))
     position = factory.Sequence(lambda n: n)
+
+
+class SurveyResponseFactory(factory.DjangoModelFactory):
+    """Factory for the ``SurveyResponse`` model."""
+    FACTORY_FOR = models.SurveyResponse
+
+    answer = factory.SubFactory(SurveyAnswerFactory)

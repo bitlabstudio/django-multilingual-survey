@@ -79,3 +79,40 @@ class SurveyAnswer(TranslatableModel):
     position = models.PositiveIntegerField(
         verbose_name=_('Position'),
     )
+
+
+class SurveyResponse(models.Model):
+    """
+    Ties a user response to an answer.
+
+    :user: Optional FK to the User. If ``None``, we are dealing with an
+      anonymous answer.
+    :answer: Optional FK to a SurveyAnswer. If ``None``, then ``other_answer``
+      must be given.
+    :other_answer: Optional free text entered by the user if no available
+      answer matches him. If ``None``, then ``answer`` must be given.
+    :date_created: Creation date of this answer.
+
+    """
+    user = models.ForeignKey(
+        'auth.User',
+        verbose_name=_('User'),
+        blank=True, null=True,
+    )
+
+    answer = models.ForeignKey(
+        SurveyAnswer,
+        verbose_name=_('Answer'),
+        blank=True, null=True,
+    )
+
+    other_answer = models.CharField(
+        verbose_name=_('Other answer'),
+        max_length=1024,
+        blank=True,
+    )
+
+    date_created = models.DateTimeField(
+        verbose_name=_('Date created'),
+        auto_now_add=True,
+    )
