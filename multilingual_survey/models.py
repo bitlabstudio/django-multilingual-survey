@@ -76,6 +76,11 @@ class SurveyAnswer(TranslatableModel):
         max_length=256,
     )
 
+    question = models.ForeignKey(
+        SurveyQuestion,
+        verbose_name=_('Question'),
+    )
+
     position = models.PositiveIntegerField(
         verbose_name=_('Position'),
     )

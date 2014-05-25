@@ -32,6 +32,7 @@ class SurveyAnswerFactory(HvadFactoryMixin, factory.DjangoModelFactory):
 
     language_code = 'en'
     slug = factory.Sequence(lambda n: 'slug{0}'.format(n))
+    question = factory.SubFactory(SurveyQuestionFactory)
     title = factory.Sequence(lambda n: 'title{0}'.format(n))
     position = factory.Sequence(lambda n: n)
 
