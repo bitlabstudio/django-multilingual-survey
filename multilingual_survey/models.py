@@ -29,6 +29,8 @@ class SurveyQuestion(TranslatableModel):
     Belongs to a Survey and has several SurveyAnswers.
 
     :title: The title of this question.
+    :slug: The slug of this question. This will be used to create the form's
+      field name.
     :content: An optional longer description of this question.
     :survey: FK to Survey.
     :is_multi_select: If ``True``, we will render checkboxes instead of
@@ -39,6 +41,11 @@ class SurveyQuestion(TranslatableModel):
     translations = TranslatedFields(
         title=models.CharField(verbose_name=_('Title'), max_length=256),
         content=models.TextField(verbose_name=_('Content'))
+    )
+
+    slug = models.SlugField(
+        verbose_name=('Slug'),
+        max_length=256,
     )
 
     survey = models.ForeignKey(
@@ -79,6 +86,7 @@ class SurveyAnswer(TranslatableModel):
     question = models.ForeignKey(
         SurveyQuestion,
         verbose_name=_('Question'),
+        related_name='answers'
     )
 
     position = models.PositiveIntegerField(
