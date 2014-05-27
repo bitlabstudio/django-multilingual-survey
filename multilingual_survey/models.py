@@ -35,6 +35,9 @@ class SurveyQuestion(TranslatableModel):
     :survey: FK to Survey.
     :is_multi_select: If ``True``, we will render checkboxes instead of
       radiobuttons or a drop-down-list..
+    :has_other_field: If ``True``, the SurveyForm will allow the user to input
+      any value into a "other" field. If ``False``, no such field will be
+      rendered.
     :position: Can be used to order questions in a survey.
 
     """
@@ -56,6 +59,11 @@ class SurveyQuestion(TranslatableModel):
 
     is_multi_select = models.BooleanField(
         verbose_name=_('Is multi-select'),
+        default=False,
+    )
+
+    has_other_field = models.BooleanField(
+        verbose_name=_('Has other-field'),
         default=False,
     )
 
@@ -100,6 +108,9 @@ class SurveyResponse(models.Model):
 
     :user: Optional FK to the User. If ``None``, we are dealing with an
       anonymous answer.
+    :question: Optional FK to a SurveyQuestion. Must be set, if ``answer`` is
+      not set but ``other_answer`` is set, so that we know to which question
+      this custom answer belongs.
     :answer: Optional FK to a SurveyAnswer. If ``None``, then ``other_answer``
       must be given.
     :other_answer: Optional free text entered by the user if no available
@@ -110,6 +121,14 @@ class SurveyResponse(models.Model):
     user = models.ForeignKey(
         'auth.User',
         verbose_name=_('User'),
+        related_name='responses',
+        blank=True, null=True,
+    )
+
+    question = models.ForeignKey(
+        SurveyQuestion,
+        verbose_name=_('Question'),
+        related_name='responses',
         blank=True, null=True,
     )
 

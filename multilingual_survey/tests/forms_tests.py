@@ -18,24 +18,36 @@ class SurveyFormTestCase(TestCase):
         self.survey = self.question1.survey
         self.answer2 = factories.SurveyAnswerFactory()
         self.question2 = factories.SurveyQuestionFactory(
-            survey=self.survey, is_multi_select=True)
+            survey=self.survey, is_multi_select=True, has_other_field=True)
         self.answer2_1 = factories.SurveyAnswerFactory(question=self.question2)
         self.answer2_2 = factories.SurveyAnswerFactory(question=self.question2)
+        self.response1 = factories.SurveyResponseFactory(
+            user=self.user, answer=self.answer1)
+        self.response2 = factories.SurveyResponseFactory(
+            user=self.user, question=self.question2, other_answer='Foobar')
 
     def test_form(self):
-        form = forms.SurveyForm(self.user, self.survey, data={})
-        self.assertTrue(form.is_valid(), msg=(
-            'Should be valid. Errors: {0}'.format(form.errors.items())))
+        form = forms.SurveyForm(self.user, self.survey)
         self.assertTrue(self.question1.slug in form.fields.keys(), msg=(
             'Should dynamically add fields for all questions to the form'))
-        self.assertTrue(
+        self.assertFalse(
             self.question1.slug + '_other' in form.fields.keys(), msg=(
-                'Should dynamically add `other` fields for all questions to'
-                ' the form'))
+                'Should not add `other` field if the question has not enabled'
+                ' it'))
 
         self.assertTrue(self.question2.slug in form.fields.keys(), msg=(
             'Should dynamically add fields for all questions to the form'))
         self.assertTrue(
             self.question2.slug + '_other' in form.fields.keys(), msg=(
-                'Should dynamically add `other` fields for all questions to'
-                ' the form'))
+                'Should dynamically add `other` field if the question has'
+                ' enabled it'))
+
+        self.assertEqual(
+            form.data[self.question1.slug], [self.answer1.pk], msg=(
+                'If no data given, the form should add the already known'
+                ' answers from the database'))
+
+        # self.assertEqual(
+        #     form.data[self.question2.slug + '_other'], 'Foobar', msg=(
+        #         'If no data given, the form should add the already known'
+        #         ' other-answers from the database'))

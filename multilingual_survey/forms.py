@@ -12,6 +12,13 @@ class SurveyForm(forms.Form):
 
     """
     def __init__(self, user, survey, *args, **kwargs):
+        """
+        Based on the given Survey, adds all necessary fields dynamically.
+
+        Based on the given user, correctly sets initial values if the user
+        has filled out this survey in the past.
+
+        """
         self.user = user
         self.survey = survey
         super(SurveyForm, self).__init__(*args, **kwargs)
@@ -30,5 +37,16 @@ class SurveyForm(forms.Form):
                     **field_kwargs)
 
             # Then we add the `other` field for the question
-            self.fields['{0}_other'.format(question.slug)] = forms.CharField(
-                max_length=2014, required=False)
+            if question.has_other_field:
+                self.fields['{0}_other'.format(question.slug)] = \
+                    forms.CharField(max_length=2014, required=False)
+
+        if kwargs.get('data'):
+            return
+
+        for question in self.survey.questions.all():
+            for response in self.user.responses.filter(
+                    answer__question=question):
+                if question.slug not in self.data:
+                    self.data[question.slug] = []
+                self.data[question.slug].append(response.answer.pk)
