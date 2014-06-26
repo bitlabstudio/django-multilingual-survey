@@ -34,6 +34,7 @@ import multilingual_survey as app
 
 dev_requires = [
     'flake8',
+    'south',
 ]
 
 install_requires = [
