@@ -1,3 +1,6 @@
+.. image:: https://badge.fury.io/py/django-multilingual-survey.svg
+    :target: http://badge.fury.io/py/django-multilingual-survey
+
 Django Multilingual Survey
 ==========================
 

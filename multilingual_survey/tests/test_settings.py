@@ -21,6 +21,8 @@ DATABASES = {
 
 ROOT_URLCONF = 'multilingual_survey.tests.urls'
 
+LANGUAGE_CODE = 'en'
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(APP_ROOT, '../app_static')
 MEDIA_ROOT = os.path.join(APP_ROOT, '../app_media')
@@ -49,7 +51,6 @@ EXTERNAL_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django.contrib.sites',
-    'django_jasmine',
     'django_nose',
     'hvad',
 ]

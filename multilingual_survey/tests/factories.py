@@ -41,4 +41,4 @@ class SurveyResponseFactory(factory.DjangoModelFactory):
     """Factory for the ``SurveyResponse`` model."""
     FACTORY_FOR = models.SurveyResponse
 
-    answer = factory.SubFactory(SurveyAnswerFactory)
+    answer = factory.RelatedFactory(SurveyAnswerFactory)

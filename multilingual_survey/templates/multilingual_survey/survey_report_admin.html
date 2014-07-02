@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ object.title }}{% endblock %}
+{% block main %}
+    <h1>{{ object.title }}</h1>
+    {% for question in object.questions.all %}
+        <h2>{{ question.title }}</h2>
+        <ul>
+            {% for answer in question.answers.all %}
+                <li>{{ answer.title }}: {{ answer.responses.count }}</li>
+            {% endfor %}
+        </ul>
+        {% if question.has_other_field %}
+            <h3>{% trans "Other responses" %}</h3>
+            <p>
+                {% for response in question.responses.all %}
+                    {% if not forloop.first %}, {% endif %}{{ response.other_answer }}
+                {% endfor %}
+            </p>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

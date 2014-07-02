@@ -1,12 +1,12 @@
 """URLs for the multilingual_survey app."""
-# from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url
 
-# from . import views
+from . import views
 
 
-# urlpatterns = patterns(
-#     '',
-#     url(r'^$',
-#         views.YourView.as_view(),
-#         name='multilingual_survey_default'),
-# )
+urlpatterns = patterns(
+    '',
+    url(r'^report/(?P<slug>[\w-]+)/$',
+        views.SurveyReportAdminView.as_view(),
+        name='multilingual_survey_admin_report'),
+)

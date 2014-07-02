@@ -21,7 +21,11 @@ class Survey(TranslatableModel):
     slug = models.SlugField(
         verbose_name=_('Slug'),
         max_length=256,
+        unique=True,
     )
+
+    def __unicode__(self):
+        return self.title
 
 
 class SurveyQuestion(TranslatableModel):
@@ -38,6 +42,8 @@ class SurveyQuestion(TranslatableModel):
     :has_other_field: If ``True``, the SurveyForm will allow the user to input
       any value into a "other" field. If ``False``, no such field will be
       rendered.
+    :required: Makes the field required, but accepts either a selected answer
+      or the other field, if there is one.
     :position: Can be used to order questions in a survey.
 
     """
@@ -67,9 +73,21 @@ class SurveyQuestion(TranslatableModel):
         default=False,
     )
 
+    required = models.BooleanField(
+        verbose_name=_('Required'),
+        default=False,
+    )
+
     position = models.PositiveIntegerField(
         verbose_name=_('Position'),
     )
+
+    def __unicode__(self):
+        return self.title
+
+    class Meta:
+        ordering = ('position', )
+        unique_together = ('slug', 'survey')
 
 
 class SurveyAnswer(TranslatableModel):
@@ -100,6 +118,13 @@ class SurveyAnswer(TranslatableModel):
     position = models.PositiveIntegerField(
         verbose_name=_('Position'),
     )
+
+    def __unicode__(self):
+        return self.title
+
+    class Meta:
+        ordering = ('position', )
+        unique_together = ('slug', 'question')
 
 
 class SurveyResponse(models.Model):
@@ -132,9 +157,10 @@ class SurveyResponse(models.Model):
         blank=True, null=True,
     )
 
-    answer = models.ForeignKey(
+    answer = models.ManyToManyField(
         SurveyAnswer,
         verbose_name=_('Answer'),
+        related_name='responses',
         blank=True, null=True,
     )
 
@@ -148,3 +174,10 @@ class SurveyResponse(models.Model):
         verbose_name=_('Date created'),
         auto_now_add=True,
     )
+
+    def __unicode__(self):
+        return 'Answer to {0} from {1}'.format(
+            self.question.title, self.user.email)
+
+    class Meta:
+        ordering = ('question__position', )
