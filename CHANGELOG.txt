@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+
+=== 0.1.1 ===
+
 - fixed form saving user response for single select questions
 
 === 0.1 ===
