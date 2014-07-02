@@ -133,7 +133,10 @@ class SurveyForm(forms.Form):
             if isinstance(response, six.string_types):
                 user_response.other_answer = response
             else:
-                for answer in response:
-                    user_response.answer.add(answer)
+                if isinstance(response, models.SurveyAnswer):
+                    user_response.answer.add(response)
+                else:
+                    for answer in response:
+                        user_response.answer.add(answer)
             user_response.save()
         return self.survey

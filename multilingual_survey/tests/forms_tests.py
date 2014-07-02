@@ -84,12 +84,15 @@ class SurveyFormTestCase(TestCase):
         self.assertEqual(models.SurveyResponse.objects.count(), 1, msg=(
             'When saved, there should be one response in the database.'))
 
-        form = forms.SurveyForm(self.user, self.survey, self.data)
+        valid_data = self.data.copy()
+        valid_data.update({self.question1.slug: self.answer1.pk})
+        form = forms.SurveyForm(self.user, self.survey, valid_data)
         self.assertTrue(form.is_valid(), msg=(
             'The form should still be valid. Errors: {0}'.format(form.errors)))
         form.save()
-        self.assertEqual(models.SurveyResponse.objects.count(), 1, msg=(
-            'When saved again, there should be one response in the database.'))
+        self.assertEqual(models.SurveyResponse.objects.count(), 2, msg=(
+            'When saved again with more responses, there should be 2'
+            ' responses in the database.'))
 
         self.assertEqual(
             form.initial[self.question2.slug], [self.answer2_1.pk], msg=(
