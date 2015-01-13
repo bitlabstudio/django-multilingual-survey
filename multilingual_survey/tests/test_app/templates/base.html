@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block head_title %}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="msapplication-config" content="none"/>
+</head>
+<body>
+
+{% block main_container %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            {% block main %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+</body>
+</html>

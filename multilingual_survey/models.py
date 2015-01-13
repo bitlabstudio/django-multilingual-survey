@@ -1,4 +1,5 @@
 """Models for the multilingual_survey app"""
+from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -48,8 +49,14 @@ class SurveyQuestion(TranslatableModel):
 
     """
     translations = TranslatedFields(
-        title=models.CharField(verbose_name=_('Title'), max_length=256),
-        content=models.TextField(verbose_name=_('Content'))
+        title=models.CharField(
+            verbose_name=_('Title'),
+            max_length=256,
+        ),
+        content=models.TextField(
+            verbose_name=_('Content'),
+            blank=True,
+        )
     )
 
     slug = models.SlugField(
@@ -78,15 +85,14 @@ class SurveyQuestion(TranslatableModel):
         default=False,
     )
 
-    position = models.PositiveIntegerField(
-        verbose_name=_('Position'),
+    generic_position = generic.GenericRelation(
+        'generic_positions.ObjectPosition'
     )
 
     def __unicode__(self):
         return self.title
 
     class Meta:
-        ordering = ('position', )
         unique_together = ('slug', 'survey')
 
 
@@ -115,15 +121,14 @@ class SurveyAnswer(TranslatableModel):
         related_name='answers'
     )
 
-    position = models.PositiveIntegerField(
-        verbose_name=_('Position'),
+    generic_position = generic.GenericRelation(
+        'generic_positions.ObjectPosition'
     )
 
     def __unicode__(self):
         return self.title
 
     class Meta:
-        ordering = ('position', )
         unique_together = ('slug', 'question')
 
 
@@ -180,4 +185,4 @@ class SurveyResponse(models.Model):
             self.question.title, self.user.email)
 
     class Meta:
-        ordering = ('question__position', )
+        ordering = ('question', )

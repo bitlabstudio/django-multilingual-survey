@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n position_tags %}
 
 {% block title %}{{ object.title }}{% endblock %}
 {% block main %}
     <h1>{{ object.title }}</h1>
-    {% for question in object.questions.all %}
+    {% for question in object.questions.all|order_by_position %}
         <h2>{{ question.title }}</h2>
         <ul>
-            {% for answer in question.answers.all %}
+            {% for answer in question.answers.all|order_by_position %}
                 <li>{{ answer.title }}: {{ answer.responses.count }}</li>
             {% endfor %}
         </ul>

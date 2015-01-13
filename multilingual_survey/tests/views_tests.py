@@ -27,3 +27,34 @@ class SurveyReportAdminViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.redirects(user=self.user, to='{0}?next={1}'.format(
                        settings.LOGIN_URL, self.get_url()))
         self.is_callable(user=self.admin)
+
+
+class SurveyReportListViewTestCase(ViewRequestFactoryTestMixin, TestCase):
+    """Tests for the ``SurveyReportListView`` view class."""
+    view_class = views.SurveyReportListView
+
+    def setUp(self):
+        self.admin = UserFactory(is_staff=True)
+        self.user = UserFactory()
+        self.survey = factories.SurveyFactory()
+
+    def test_view(self):
+        self.should_redirect_to_login_when_anonymous()
+        # should also redirect to login for regular users
+        self.redirects(user=self.user, to='{0}?next={1}'.format(
+                       settings.LOGIN_URL, self.get_url()))
+        self.is_callable(user=self.admin)
+
+
+class SurveyViewTestCase(ViewRequestFactoryTestMixin, TestCase):
+    """Tests for the ``SurveyView`` view class."""
+    view_class = views.SurveyView
+
+    def get_view_kwargs(self):
+        return {'slug': self.survey.slug}
+
+    def setUp(self):
+        self.survey = factories.SurveyFactory()
+
+    def test_view(self):
+        self.is_callable()

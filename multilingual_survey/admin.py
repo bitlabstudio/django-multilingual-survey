@@ -2,6 +2,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
+from generic_positions.admin import GenericPositionsAdmin
 from hvad.admin import TranslatableAdmin
 
 from . import models
@@ -16,19 +17,19 @@ class SurveyAdmin(TranslatableAdmin):
     get_title.short_description = _('Title')
 
 
-class SurveyQuestionAdmin(TranslatableAdmin):
+class SurveyQuestionAdmin(GenericPositionsAdmin, TranslatableAdmin):
     """Custom admin for the ``SurveyQuestion`` model."""
     list_display = ['get_title', 'slug', 'survey', 'is_multi_select',
-                    'has_other_field', 'required', 'position']
+                    'has_other_field', 'required']
 
     def get_title(self, obj):
         return obj.title
     get_title.short_description = _('Title')
 
 
-class SurveyAnswerAdmin(TranslatableAdmin):
+class SurveyAnswerAdmin(GenericPositionsAdmin, TranslatableAdmin):
     """Custom admin for the ``SurveyAnswer`` model."""
-    list_display = ['get_title', 'slug', 'question', 'position']
+    list_display = ['get_title', 'slug', 'question']
 
     def get_title(self, obj):
         return obj.title

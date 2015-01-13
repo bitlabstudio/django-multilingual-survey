@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^$', include('multilingual_survey.urls')),
+    url(r'^pos/', include('generic_positions.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('multilingual_survey.urls')),
 )

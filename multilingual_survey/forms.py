@@ -71,8 +71,7 @@ class SurveyForm(forms.Form):
                     forms.CharField(
                         label=_('Other'),
                         max_length=2014,
-                        required=False,
-                    )
+                        required=False)
 
     def get_initial(self):
         initial = {}

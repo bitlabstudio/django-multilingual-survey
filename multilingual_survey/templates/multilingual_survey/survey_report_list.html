@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Surveys" %}{% endblock %}
+{% block main %}
+    <h1>{% trans "Surveys" %}</h1>
+    <ul>
+        {% for survey in object_list %}
+            <li><a href="{% url "multilingual_survey_admin_report" slug=survey.slug %}">{{ survey.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
