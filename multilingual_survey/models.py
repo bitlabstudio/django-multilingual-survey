@@ -11,12 +11,21 @@ class Survey(TranslatableModel):
     A Survey consists of several Questions.
 
     :title: The name of this survey. Authors may change the title.
+    :description: Optional description to add extra information to the survey.
     :slug: The slug of this survey. The slug should never be changed, since it
       might be referenced in the code.
 
     """
     translations = TranslatedFields(
-        title=models.CharField(verbose_name=_('Title'), max_length=256)
+        title=models.CharField(
+            verbose_name=_('Title'),
+            max_length=256,
+        ),
+        description=models.TextField(
+            verbose_name=_('Description'),
+            max_length=2048,
+            blank=True,
+        )
     )
 
     slug = models.SlugField(
@@ -181,7 +190,7 @@ class SurveyResponse(models.Model):
     )
 
     def __unicode__(self):
-        return 'Answer to {0} from {1}'.format(
+        return u'Answer to {0} from {1}'.format(
             self.question.title, self.user.email)
 
     class Meta:

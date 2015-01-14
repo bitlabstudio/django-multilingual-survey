@@ -19,19 +19,25 @@ class SurveyFormTestCase(TestCase):
         self.survey = self.question1.survey
         self.answer2 = factories.SurveyAnswerFactory()
         self.question2 = factories.SurveyQuestionFactory(
+            survey=self.survey, has_other_field=True)
+        factories.SurveyResponseFactory(
+            answer=None, other_answer='Foo', question=self.question2,
+            user=self.user)
+        self.question3 = factories.SurveyQuestionFactory(
             survey=self.survey, is_multi_select=True, has_other_field=True,
             required=True)
-        self.answer2_1 = factories.SurveyAnswerFactory(question=self.question2)
-        self.answer2_2 = factories.SurveyAnswerFactory(question=self.question2)
+        self.answer3_1 = factories.SurveyAnswerFactory(question=self.question3)
+        self.answer3_2 = factories.SurveyAnswerFactory(question=self.question3)
 #         self.response1 = factories.SurveyResponseFactory(
 #             user=self.user, answer=self.answer1)
 #         self.response2 = factories.SurveyResponseFactory(
-#             user=self.user, question=self.question2, other_answer='Foobar')
+#             user=self.user, question=self.question3, other_answer='Foobar')
 
         self.data = {
             # question 1 was not required
             self.question1.slug: [],
-            self.question2.slug: [self.answer2_1.pk],
+            '{0}_other'.format(self.question2.slug): 'Foo',
+            self.question3.slug: [self.answer3_1.pk],
         }
 
     def test_form(self):
@@ -43,15 +49,15 @@ class SurveyFormTestCase(TestCase):
                 'Should not add `other` field if the question has not enabled'
                 ' it'))
 
-        self.assertTrue(self.question2.slug in form.fields.keys(), msg=(
+        self.assertTrue(self.question3.slug in form.fields.keys(), msg=(
             'Should dynamically add fields for all questions to the form'))
         self.assertTrue(
-            self.question2.slug + '_other' in form.fields.keys(), msg=(
+            self.question3.slug + '_other' in form.fields.keys(), msg=(
                 'Should dynamically add `other` field if the question has'
                 ' enabled it'))
 
         # self.assertEqual(
-        #     form.data[self.question2.slug + '_other'], 'Foobar', msg=(
+        #     form.data[self.question3.slug + '_other'], 'Foobar', msg=(
         #         'If no data given, the form should add the already known'
         #         ' other-answers from the database'))
 
@@ -62,7 +68,8 @@ class SurveyFormTestCase(TestCase):
         valid_data = {
             # question 1 was not required
             self.question1.slug: [],
-            '{0}_other'.format(self.question2.slug): 'Something',
+            '{0}_other'.format(self.question2.slug): 'Foo',
+            '{0}_other'.format(self.question3.slug): 'Something',
         }
         form = forms.SurveyForm(self.user, self.survey, valid_data)
         self.assertTrue(form.is_valid(), msg=(
@@ -74,15 +81,15 @@ class SurveyFormTestCase(TestCase):
         form = forms.SurveyForm(self.user, self.survey, bad_data)
         self.assertFalse(form.is_valid(), msg='The form should not be valid.')
 
-        self.question2.has_other_field = False
-        self.question2.save()
+        self.question3.has_other_field = False
+        self.question3.save()
         form = forms.SurveyForm(self.user, self.survey, self.data)
         self.assertTrue(form.is_valid(), msg=(
             'The form should be valid. Errors: {0}'.format(form.errors)))
 
         form.save()
-        self.assertEqual(models.SurveyResponse.objects.count(), 1, msg=(
-            'When saved, there should be one response in the database.'))
+        self.assertEqual(models.SurveyResponse.objects.count(), 2, msg=(
+            'When saved, there should be two responses in the database.'))
 
         valid_data = self.data.copy()
         valid_data.update({self.question1.slug: self.answer1.pk})
@@ -90,11 +97,11 @@ class SurveyFormTestCase(TestCase):
         self.assertTrue(form.is_valid(), msg=(
             'The form should still be valid. Errors: {0}'.format(form.errors)))
         form.save()
-        self.assertEqual(models.SurveyResponse.objects.count(), 2, msg=(
-            'When saved again with more responses, there should be 2'
+        self.assertEqual(models.SurveyResponse.objects.count(), 3, msg=(
+            'When saved again with more responses, there should be 3'
             ' responses in the database.'))
 
         self.assertEqual(
-            form.initial[self.question2.slug], [self.answer2_1.pk], msg=(
+            form.initial[self.question3.slug], [self.answer3_1.pk], msg=(
                 'If no data given, the form should add the already known'
                 ' answers from the database'))

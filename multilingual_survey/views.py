@@ -42,9 +42,21 @@ class SurveyView(FormView):
             raise Http404
         return super(SurveyView, self).dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super(SurveyView, self).get_context_data(**kwargs)
+        context.update({'survey': self.survey})
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(SurveyView, self).get_form_kwargs()
         kwargs.update({
             'user': self.request.user,
             'survey': self.survey,
         })
         return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context.update({'success': True})
+        return self.render_to_response(context)

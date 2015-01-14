@@ -55,7 +55,7 @@ class SurveyResponseAdmin(admin.ModelAdmin):
     get_answer.short_description = _('Answer')
 
     def user_email(self, obj):
-        return obj.user.email
+        return obj.user.email if obj.user else 'Anonymous'
     user_email.short_description = _('User')
 
 

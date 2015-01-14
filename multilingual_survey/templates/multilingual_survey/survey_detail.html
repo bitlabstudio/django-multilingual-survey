@@ -1,8 +1,19 @@
 {% extends "base.html" %}
 {% load i18n position_tags %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}{{ survey.title }}{% endblock %}
+
 {% block main %}
-    <h1>{{ object.title }}</h1>
-    {{ form }}
+    <h1>{{ survey.title }}</h1>
+    {% if survey.description %}
+        <p>{{ survey.description|linebreaks }}</p>
+    {% endif %}
+    {% if success %}
+        <p>{% trans "Thank you for participating in our survey." %}</p>
+    {% else %}
+        <form method="post" action=".">
+            {% include "django_libs/partials/form.html" %}
+            <input class="btn btn-success" type="submit" value="{% trans "Send" %}" />
+        </form>
+    {% endif %}
 {% endblock %}

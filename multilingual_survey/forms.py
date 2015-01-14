@@ -5,6 +5,8 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 
+from generic_positions.templatetags.position_tags import order_by_position
+
 from . import models
 
 
@@ -27,7 +29,7 @@ class SurveyForm(forms.Form):
         has filled out this survey in the past.
 
         """
-        self.user = user
+        self.user = user if user.is_authenticated() else None
         self.survey = survey
         self.base_fields = {}
         self.is_bound = data is not None or files is not None
@@ -46,47 +48,56 @@ class SurveyForm(forms.Form):
         self.fields = OrderedDict()
         self.initial = initial or self.get_initial()
 
-        for question in self.survey.questions.all():
+        for question in order_by_position(self.survey.questions.all()):
             # First we add the select/multiselect for the question
             queryset = question.answers.all()
-            field_kwargs = {
-                'label': question.title,
-                'queryset': queryset,
-                'required': False,
-            }
+            if queryset:
+                field_kwargs = {
+                    'label': question.title,
+                    'queryset': queryset,
+                    'required': False,
+                }
 
-            if self.initial.get(question.slug):
-                field_kwargs.update({'initial': self.initial.get(
-                    question.slug)})
-            if question.is_multi_select:
-                self.fields[question.slug] = forms.ModelMultipleChoiceField(
-                    **field_kwargs)
-            else:
-                self.fields[question.slug] = forms.ModelChoiceField(
-                    **field_kwargs)
+                if self.initial.get(question.slug):
+                    field_kwargs.update({'initial': self.initial.get(
+                        question.slug)})
 
-            # Then we add the `other` field for the question
-            if question.has_other_field:
+                if question.is_multi_select:
+                    self.fields[question.slug] = forms.ModelMultipleChoiceField(
+                        **field_kwargs)
+                else:
+                    self.fields[question.slug] = forms.ModelChoiceField(
+                        **field_kwargs)
+
+                # Then we add the `other` field for the question
+                if question.has_other_field:
+                    self.fields[u'{0}_other'.format(question.slug)] = \
+                        forms.CharField(
+                            label=_('Other'),
+                            max_length=2014,
+                            required=False)
+            elif question.has_other_field:
                 self.fields[u'{0}_other'.format(question.slug)] = \
                     forms.CharField(
-                        label=_('Other'),
+                        label=question.title,
                         max_length=2014,
                         required=False)
 
     def get_initial(self):
         initial = {}
-        for question in self.survey.questions.all():
-            try:
-                response = self.user.responses.filter(
-                    answer__question=question).distinct().get()
-            except models.SurveyResponse.DoesNotExist:
-                pass
-            else:
-                if not response.other_answer:
-                    initial[question.slug] = [
-                        resp.pk for resp in response.answer.all()]
+        if self.user:
+            for question in self.survey.questions.all():
+                try:
+                    response = self.user.responses.filter(
+                        question=question).distinct().get()
+                except models.SurveyResponse.DoesNotExist:
+                    pass
                 else:
-                    initial[question.slug] = response.other_answer
+                    if not response.other_answer:
+                        initial[question.slug] = [
+                            resp.pk for resp in response.answer.all()]
+                    else:
+                        initial[question.slug] = response.other_answer
         return initial
 
     def clean(self):
@@ -99,7 +110,6 @@ class SurveyForm(forms.Form):
                         '{0}_other'.format(question.slug))):
                     self._errors[question.slug] = [_(
                         'This field is required.')]
-
         return self.cleaned_data
 
     def save(self):

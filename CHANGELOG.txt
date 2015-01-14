@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+=== 0.2 ===
+
+- Prepared app for anonymous users and for the use of text answers
 
 === 0.1.1 ===
 

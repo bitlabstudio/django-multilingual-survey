@@ -55,6 +55,9 @@ class SurveyViewTestCase(ViewRequestFactoryTestMixin, TestCase):
 
     def setUp(self):
         self.survey = factories.SurveyFactory()
+        self.data = {}
 
     def test_view(self):
         self.is_callable()
+        self.is_not_callable(kwargs={'slug': 'foo'})
+        self.is_postable(data=self.data, ajax=True)
