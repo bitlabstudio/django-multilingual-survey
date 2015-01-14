@@ -54,7 +54,8 @@ class SurveyForm(forms.Form):
             if queryset:
                 field_kwargs = {
                     'label': question.title,
-                    'queryset': order_by_position(queryset),
+                    'queryset': queryset.order_by(
+                        'generic_position__position'),
                     'required': False,
                 }
 
@@ -71,17 +72,15 @@ class SurveyForm(forms.Form):
 
                 # Then we add the `other` field for the question
                 if question.has_other_field:
-                    self.fields[u'{0}_other'.format(question.slug)] = \
-                        forms.CharField(
-                            label=_('Other'),
-                            max_length=2014,
-                            required=False)
+                    field_name = u'{0}_other'.format(question.slug)
+                    self.fields[field_name] = forms.CharField(
+                        label=_('Other'), max_length=2014, required=False)
+                    self.fields[field_name].widget.attrs.update({
+                        'data-class': 'other-field'})
             elif question.has_other_field:
                 self.fields[u'{0}_other'.format(question.slug)] = \
-                    forms.CharField(
-                        label=question.title,
-                        max_length=2014,
-                        required=False)
+                    forms.CharField(label=question.title, max_length=2014,
+                                    required=question.required)
 
     def get_initial(self):
         initial = {}

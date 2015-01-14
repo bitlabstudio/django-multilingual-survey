@@ -191,7 +191,7 @@ class SurveyResponse(models.Model):
 
     def __unicode__(self):
         return u'Answer to {0} from {1}'.format(
-            self.question.title, self.user.email)
+            self.question.title, self.user.email if self.user else '(?)')
 
     class Meta:
         ordering = ('question', )

@@ -17,7 +17,6 @@ class SurveyFormTestCase(TestCase):
         self.answer1 = factories.SurveyAnswerFactory()
         self.question1 = self.answer1.question
         self.survey = self.question1.survey
-        self.answer2 = factories.SurveyAnswerFactory()
         self.question2 = factories.SurveyQuestionFactory(
             survey=self.survey, has_other_field=True)
         factories.SurveyResponseFactory(
@@ -28,6 +27,8 @@ class SurveyFormTestCase(TestCase):
             required=True)
         self.answer3_1 = factories.SurveyAnswerFactory(question=self.question3)
         self.answer3_2 = factories.SurveyAnswerFactory(question=self.question3)
+        self.question4 = factories.SurveyQuestionFactory(survey=self.survey)
+        self.answer4 = factories.SurveyAnswerFactory(question=self.question4)
 #         self.response1 = factories.SurveyResponseFactory(
 #             user=self.user, answer=self.answer1)
 #         self.response2 = factories.SurveyResponseFactory(
@@ -38,6 +39,7 @@ class SurveyFormTestCase(TestCase):
             self.question1.slug: [],
             '{0}_other'.format(self.question2.slug): 'Foo',
             self.question3.slug: [self.answer3_1.pk],
+            self.question4.slug: self.answer4.pk,
         }
 
     def test_form(self):
@@ -88,8 +90,8 @@ class SurveyFormTestCase(TestCase):
             'The form should be valid. Errors: {0}'.format(form.errors)))
 
         form.save()
-        self.assertEqual(models.SurveyResponse.objects.count(), 2, msg=(
-            'When saved, there should be two responses in the database.'))
+        self.assertEqual(models.SurveyResponse.objects.count(), 3, msg=(
+            'When saved, there should be three responses in the database.'))
 
         valid_data = self.data.copy()
         valid_data.update({self.question1.slug: self.answer1.pk})
@@ -97,8 +99,8 @@ class SurveyFormTestCase(TestCase):
         self.assertTrue(form.is_valid(), msg=(
             'The form should still be valid. Errors: {0}'.format(form.errors)))
         form.save()
-        self.assertEqual(models.SurveyResponse.objects.count(), 3, msg=(
-            'When saved again with more responses, there should be 3'
+        self.assertEqual(models.SurveyResponse.objects.count(), 4, msg=(
+            'When saved again with more responses, there should be 4'
             ' responses in the database.'))
 
         self.assertEqual(
