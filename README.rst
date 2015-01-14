@@ -44,6 +44,7 @@ Add ``multilingual_survey`` to your ``INSTALLED_APPS``
 
     INSTALLED_APPS = (
         ...,
+        'generic_positions',
         'multilingual_survey',
     )
 
