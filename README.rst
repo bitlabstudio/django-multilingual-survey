@@ -44,6 +44,7 @@ Add ``multilingual_survey`` to your ``INSTALLED_APPS``
 
     INSTALLED_APPS = (
         ...,
+        'generic_positions',
         'multilingual_survey',
     )
 
@@ -53,6 +54,7 @@ Add the ``multilingual_survey`` URLs to your ``urls.py``
 
     urlpatterns = patterns('',
         ...
+        url(r'^pos/', include('generic_positions.urls')),
         url(r'^survey/', include('multilingual_survey.urls')),
     )
 
