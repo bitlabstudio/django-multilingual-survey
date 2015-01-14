@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-14 12:11-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: multilingual_survey/admin.py:17 multilingual_survey/admin.py:28
+#: multilingual_survey/admin.py:38 multilingual_survey/models.py:21
+#: multilingual_survey/models.py:62 multilingual_survey/models.py:119
+msgid "Title"
+msgstr "Titel"
+
+#: multilingual_survey/admin.py:57 multilingual_survey/models.py:176
+msgid "Answer"
+msgstr "Antwort"
+
+#: multilingual_survey/admin.py:61 multilingual_survey/models.py:162
+msgid "User"
+msgstr "Benutzer"
+
+#: multilingual_survey/forms.py:77
+msgid "Other"
+msgstr "Sonstiges"
+
+#: multilingual_survey/forms.py:111
+msgid "This field is required."
+msgstr "Dieses Feld ist Pflicht."
+
+#: multilingual_survey/models.py:25
+msgid "Description"
+msgstr "Erläuterung"
+
+#: multilingual_survey/models.py:32 multilingual_survey/models.py:123
+msgid "Slug"
+msgstr "Slug"
+
+#: multilingual_survey/models.py:66
+msgid "Content"
+msgstr "Inhalt"
+
+#: multilingual_survey/models.py:78
+msgid "Survey"
+msgstr "Umfrage"
+
+#: multilingual_survey/models.py:83
+msgid "Is multi-select"
+msgstr "Ist Multiple-Choice"
+
+#: multilingual_survey/models.py:88
+msgid "Has other-field"
+msgstr "Hat ein Sonstiges-Feld"
+
+#: multilingual_survey/models.py:93
+msgid "Required"
+msgstr "Erforderlich"
+
+#: multilingual_survey/models.py:129 multilingual_survey/models.py:169
+msgid "Question"
+msgstr "Frage"
+
+#: multilingual_survey/models.py:182
+msgid "Other answer"
+msgstr "Andere Antwort"
+
+#: multilingual_survey/models.py:188
+msgid "Date created"
+msgstr "Datum der Erstellung"
+
+#: multilingual_survey/templates/multilingual_survey/survey_detail.html:12
+msgid "Thank you for participating in our survey."
+msgstr "Vielen Dank für deine Teilnahme."
+
+#: multilingual_survey/templates/multilingual_survey/survey_detail.html:16
+msgid "Send"
+msgstr "Absenden"
+
+#: multilingual_survey/templates/multilingual_survey/survey_report_admin.html:15
+msgid "Other responses"
+msgstr "Andere Rückmeldungen"
+
+#: multilingual_survey/templates/multilingual_survey/survey_report_list.html:4
+#: multilingual_survey/templates/multilingual_survey/survey_report_list.html:6
+msgid "Surveys"
+msgstr "Umfragen"
