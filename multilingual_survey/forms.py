@@ -54,7 +54,7 @@ class SurveyForm(forms.Form):
             if queryset:
                 field_kwargs = {
                     'label': question.title,
-                    'queryset': queryset,
+                    'queryset': order_by_position(queryset),
                     'required': False,
                 }
 

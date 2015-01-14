@@ -21,6 +21,7 @@ class SurveyQuestionAdmin(GenericPositionsAdmin, TranslatableAdmin):
     """Custom admin for the ``SurveyQuestion`` model."""
     list_display = ['get_title', 'slug', 'survey', 'is_multi_select',
                     'has_other_field', 'required']
+    list_filter = ['survey', ]
 
     def get_title(self, obj):
         return obj.title
@@ -30,6 +31,7 @@ class SurveyQuestionAdmin(GenericPositionsAdmin, TranslatableAdmin):
 class SurveyAnswerAdmin(GenericPositionsAdmin, TranslatableAdmin):
     """Custom admin for the ``SurveyAnswer`` model."""
     list_display = ['get_title', 'slug', 'question']
+    list_filter = ['question', ]
 
     def get_title(self, obj):
         return obj.title
