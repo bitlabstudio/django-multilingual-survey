@@ -54,6 +54,7 @@ Add the ``multilingual_survey`` URLs to your ``urls.py``
 
     urlpatterns = patterns('',
         ...
+        url(r'^pos/', include('generic_positions.urls')),
         url(r'^survey/', include('multilingual_survey.urls')),
     )
 
