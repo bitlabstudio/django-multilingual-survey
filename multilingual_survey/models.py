@@ -35,7 +35,7 @@ class Survey(TranslatableModel):
     )
 
     def __unicode__(self):
-        return self.title
+        return self.safe_translation_getter('title', str(self.pk))
 
 
 class SurveyQuestion(TranslatableModel):
@@ -99,7 +99,7 @@ class SurveyQuestion(TranslatableModel):
     )
 
     def __unicode__(self):
-        return self.title
+        return self.safe_translation_getter('title', str(self.pk))
 
     class Meta:
         unique_together = ('slug', 'survey')
@@ -135,7 +135,7 @@ class SurveyAnswer(TranslatableModel):
     )
 
     def __unicode__(self):
-        return self.title
+        return self.safe_translation_getter('title', str(self.pk))
 
     class Meta:
         unique_together = ('slug', 'question')
@@ -191,7 +191,7 @@ class SurveyResponse(models.Model):
 
     def __unicode__(self):
         return u'Answer to {0} from {1}'.format(
-            self.question.title, self.user.email if self.user else '(?)')
+            self.question, self.user.email if self.user else '(?)')
 
     class Meta:
         ordering = ('question', )

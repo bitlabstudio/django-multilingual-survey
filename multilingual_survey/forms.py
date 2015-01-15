@@ -53,7 +53,7 @@ class SurveyForm(forms.Form):
             queryset = question.answers.all()
             if queryset:
                 field_kwargs = {
-                    'label': question.title,
+                    'label': question.__unicode__(),
                     'queryset': queryset.order_by(
                         'generic_position__position'),
                     'required': False,
@@ -79,8 +79,9 @@ class SurveyForm(forms.Form):
                         'data-class': 'other-field'})
             elif question.has_other_field:
                 self.fields[u'{0}_other'.format(question.slug)] = \
-                    forms.CharField(label=question.title, max_length=2014,
-                                    required=question.required)
+                    forms.CharField(
+                        label=question.__unicode__(), max_length=2014,
+                        required=question.required)
 
     def get_initial(self):
         initial = {}

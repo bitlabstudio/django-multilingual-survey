@@ -13,7 +13,7 @@ class SurveyAdmin(TranslatableAdmin):
     list_display = ['get_title', 'slug']
 
     def get_title(self, obj):
-        return obj.title
+        return obj.__unicode__()
     get_title.short_description = _('Title')
 
 
@@ -24,7 +24,7 @@ class SurveyQuestionAdmin(GenericPositionsAdmin, TranslatableAdmin):
     list_filter = ['survey', ]
 
     def get_title(self, obj):
-        return obj.title
+        return obj.__unicode__()
     get_title.short_description = _('Title')
 
 
@@ -34,7 +34,7 @@ class SurveyAnswerAdmin(GenericPositionsAdmin, TranslatableAdmin):
     list_filter = ['question', ]
 
     def get_title(self, obj):
-        return obj.title
+        return obj.__unicode__()
     get_title.short_description = _('Title')
 
 
@@ -49,9 +49,9 @@ class SurveyResponseAdmin(admin.ModelAdmin):
         answer_string = ''
         for answer in obj.answer.all():
             if answer_string == '':
-                answer_string += answer.title
+                answer_string += answer.__unicode__()
             else:
-                answer_string += ', {0}'.format(answer.title)
+                answer_string += u', {0}'.format(answer.__unicode__())
         answer_string = answer_string[:30] + unicode(answer_count)
         return answer_string
     get_answer.short_description = _('Answer')
