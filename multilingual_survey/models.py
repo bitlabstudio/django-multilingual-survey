@@ -3,10 +3,11 @@ from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from django_libs.models_mixins import TranslationModelMixin
 from hvad.models import TranslatableModel, TranslatedFields
 
 
-class Survey(TranslatableModel):
+class Survey(TranslationModelMixin, TranslatableModel):
     """
     A Survey consists of several Questions.
 
@@ -34,11 +35,8 @@ class Survey(TranslatableModel):
         unique=True,
     )
 
-    def __unicode__(self):
-        return self.safe_translation_getter('title', str(self.pk))
 
-
-class SurveyQuestion(TranslatableModel):
+class SurveyQuestion(TranslationModelMixin, TranslatableModel):
     """
     Belongs to a Survey and has several SurveyAnswers.
 
@@ -98,14 +96,11 @@ class SurveyQuestion(TranslatableModel):
         'generic_positions.ObjectPosition'
     )
 
-    def __unicode__(self):
-        return self.safe_translation_getter('title', str(self.pk))
-
     class Meta:
         unique_together = ('slug', 'survey')
 
 
-class SurveyAnswer(TranslatableModel):
+class SurveyAnswer(TranslationModelMixin, TranslatableModel):
     """
     Belongs to a SurveyQuestion.
 
@@ -133,9 +128,6 @@ class SurveyAnswer(TranslatableModel):
     generic_position = generic.GenericRelation(
         'generic_positions.ObjectPosition'
     )
-
-    def __unicode__(self):
-        return self.safe_translation_getter('title', str(self.pk))
 
     class Meta:
         unique_together = ('slug', 'question')
