@@ -52,6 +52,7 @@ class SurveyView(FormView):
         kwargs.update({
             'user': self.request.user,
             'survey': self.survey,
+            'session_key': self.request.session.session_key,
         })
         return kwargs
 

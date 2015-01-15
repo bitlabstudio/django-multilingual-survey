@@ -147,6 +147,7 @@ class SurveyResponse(models.Model):
 
     :user: Optional FK to the User. If ``None``, we are dealing with an
       anonymous answer.
+    :session_id: Optional session id storage to identify anonymous users.
     :question: Optional FK to a SurveyQuestion. Must be set, if ``answer`` is
       not set but ``other_answer`` is set, so that we know to which question
       this custom answer belongs.
@@ -162,6 +163,12 @@ class SurveyResponse(models.Model):
         verbose_name=_('User'),
         related_name='responses',
         blank=True, null=True,
+    )
+
+    session_id = models.CharField(
+        verbose_name=_('Session ID'),
+        max_length=1024,
+        blank=True,
     )
 
     question = models.ForeignKey(

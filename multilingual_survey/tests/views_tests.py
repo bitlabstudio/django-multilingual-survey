@@ -58,6 +58,6 @@ class SurveyViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.data = {}
 
     def test_view(self):
-        self.is_callable()
+        self.is_callable(add_session=True)
         self.is_not_callable(kwargs={'slug': 'foo'})
-        self.is_postable(data=self.data, ajax=True)
+        self.is_postable(add_session=True, data=self.data, ajax=True)

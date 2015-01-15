@@ -19,9 +19,9 @@ class SurveyForm(forms.Form):
     (multi-select vs. single-select).
 
     """
-    def __init__(self, user, survey, data=None, files=None, auto_id='id_%s',
-                 prefix=None, initial=None, error_class=forms.util.ErrorList,
-                 label_suffix=':', empty_permitted=False):
+    def __init__(self, user, session_key, survey, data=None, files=None,
+                 auto_id='id_%s', prefix=None, initial=None, label_suffix=':',
+                 error_class=forms.util.ErrorList, empty_permitted=False):
         """
         Based on the given Survey, adds all necessary fields dynamically.
 
@@ -30,6 +30,7 @@ class SurveyForm(forms.Form):
 
         """
         self.user = user if user.is_authenticated() else None
+        self.session_key = session_key
         self.survey = survey
         self.base_fields = {}
         self.is_bound = data is not None or files is not None
@@ -80,24 +81,37 @@ class SurveyForm(forms.Form):
             elif question.has_other_field:
                 self.fields[u'{0}_other'.format(question.slug)] = \
                     forms.CharField(
-                        label=question.__unicode__(), max_length=2014,
-                        required=question.required)
+                        label=question.__unicode__(),
+                        max_length=2014,
+                        required=question.required,
+                        initial=self.initial.get(question.slug))
 
     def get_initial(self):
         initial = {}
-        if self.user:
-            for question in self.survey.questions.all():
+        for question in self.survey.questions.all():
+            if self.user:
                 try:
                     response = self.user.responses.filter(
                         question=question).distinct().get()
                 except models.SurveyResponse.DoesNotExist:
-                    pass
-                else:
-                    if not response.other_answer:
-                        initial[question.slug] = [
-                            resp.pk for resp in response.answer.all()]
-                    else:
-                        initial[question.slug] = response.other_answer
+                    continue
+            else:
+                try:
+                    response = models.SurveyResponse.objects.filter(
+                        question=question,
+                        session_id=self.session_key,
+                        user__isnull=True,
+                    ).distinct().get()
+                except models.SurveyResponse.DoesNotExist:
+                    continue
+            if not response.other_answer:
+                if question.is_multi_select:
+                    initial[question.slug] = [
+                        resp.pk for resp in response.answer.all()]
+                elif response.answer.all():
+                    initial[question.slug] = response.answer.all()[0].pk
+            else:
+                initial[question.slug] = response.other_answer
         return initial
 
     def clean(self):
@@ -125,27 +139,31 @@ class SurveyForm(forms.Form):
             # and continue
             if not response:
                 models.SurveyResponse.objects.filter(
-                    user=self.user, question=question).delete()
+                    user=self.user,
+                    session_id=self.session_key,
+                    question=question,
+                ).delete()
                 continue
 
             # otherwise check if there was a response. If not create one.
-            try:
-                user_response = models.SurveyResponse.objects.get(
+            if self.user:
+                resp_obj, crtd = models.SurveyResponse.objects.get_or_create(
                     user=self.user, question=question)
-            except models.SurveyResponse.DoesNotExist:
-                user_response = models.SurveyResponse.objects.create(
-                    user=self.user, question=question)
+            else:
+                resp_obj, crtd = models.SurveyResponse.objects.get_or_create(
+                    user__isnull=True, session_id=self.session_key,
+                    question=question)
 
             # Assign the answer to the user response object
-            user_response.answer.clear()
-            user_response.other_answer = ''
+            resp_obj.answer.clear()
+            resp_obj.other_answer = ''
             if isinstance(response, six.string_types):
-                user_response.other_answer = response
+                resp_obj.other_answer = response
             else:
                 if isinstance(response, models.SurveyAnswer):
-                    user_response.answer.add(response)
+                    resp_obj.answer.add(response)
                 else:
                     for answer in response:
-                        user_response.answer.add(answer)
-            user_response.save()
+                        resp_obj.answer.add(answer)
+            resp_obj.save()
         return self.survey
