@@ -43,17 +43,18 @@ class SurveyResponseAdmin(admin.ModelAdmin):
     list_display = ['user_email', 'question', 'get_answer', 'date_created']
 
     def get_answer(self, obj):
-        if obj.other_answer:
-            return obj.other_answer
-        answer_count = obj.answer.count()
         answer_string = ''
         for answer in obj.answer.all():
             if answer_string == '':
                 answer_string += answer.__unicode__()
             else:
                 answer_string += u', {0}'.format(answer.__unicode__())
-        answer_string = answer_string[:30] + unicode(answer_count)
-        return answer_string
+        if obj.other_answer:
+            if answer_string == '':
+                answer_string += obj.other_answer
+            else:
+                answer_string += u', *{0}'.format(obj.other_answer)
+        return answer_string[:30]
     get_answer.short_description = _('Answer')
 
     def user_email(self, obj):

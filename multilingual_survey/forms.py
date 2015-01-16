@@ -3,7 +3,6 @@ from collections import OrderedDict
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.utils import six
 
 from generic_positions.templatetags.position_tags import order_by_position
 
@@ -131,18 +130,25 @@ class SurveyForm(forms.Form):
             # read the response from the cleaned data
             response = self.cleaned_data.get(question.slug)
             # if there is none but there is an other field, try again
-            if not response and question.has_other_field:
-                response = self.cleaned_data.get('{0}_other'.format(
+            other_response = False
+            if question.has_other_field:
+                other_response = self.cleaned_data.get('{0}_other'.format(
                     question.slug))
 
             # if there was no response given in the data, remove the old one
             # and continue
-            if not response:
-                models.SurveyResponse.objects.filter(
-                    user=self.user,
-                    session_id=self.session_key,
-                    question=question,
-                ).delete()
+            if not response and not other_response:
+                if self.user:
+                    models.SurveyResponse.objects.filter(
+                        user=self.user,
+                        question=question,
+                    ).delete()
+                else:
+                    models.SurveyResponse.objects.filter(
+                        user__isnull=True,
+                        session_id=self.session_key,
+                        question=question,
+                    ).delete()
                 continue
 
             # otherwise check if there was a response. If not create one.
@@ -157,9 +163,9 @@ class SurveyForm(forms.Form):
             # Assign the answer to the user response object
             resp_obj.answer.clear()
             resp_obj.other_answer = ''
-            if isinstance(response, six.string_types):
-                resp_obj.other_answer = response
-            else:
+            if other_response:
+                resp_obj.other_answer = other_response
+            if response:
                 if isinstance(response, models.SurveyAnswer):
                     resp_obj.answer.add(response)
                 else:
