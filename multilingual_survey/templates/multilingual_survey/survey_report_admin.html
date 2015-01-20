@@ -42,7 +42,8 @@
                     <tr>
                         <td class="text-muted">{% trans "Other responses" %}</td>
                         <td colspan="{{ question.answers.count }}">
-                            {% for response in question.responses.all %}
+                            {% filter_responses question user_selection session_selection as responses %}
+                            {% for response in responses %}
                                 {% if response.other_answer %}
                                     <span class="badge badge-default">{{ response.other_answer }}</span>
                                 {% endif %}
