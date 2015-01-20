@@ -1,5 +1,6 @@
 === (ongoing) ===
 
+- added answer filter to admin view
 - added checkbox widget for multiselect answers
 - ordering answers by position
 - used session key to identify anonymous users
