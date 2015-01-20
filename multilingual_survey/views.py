@@ -15,8 +15,26 @@ class SurveyReportAdminView(DetailView):
 
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
+        if request.GET.get('answer'):
+            try:
+                self.answer = models.SurveyAnswer.objects.get(
+                    pk=request.GET['answer'])
+            except models.SurveyAnswer.DoesNotExist:
+                pass
         return super(SurveyReportAdminView, self).dispatch(
             request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SurveyReportAdminView, self).get_context_data(**kwargs)
+        if hasattr(self, 'answer') and self.answer:
+            context.update({
+                'user_selection': self.answer.responses.values_list(
+                    'user__pk', flat=True),
+                'session_selection': self.answer.responses.values_list(
+                    'session_id', flat=True),
+                'current_answer': self.answer,
+            })
+        return context
 
 
 class SurveyReportListView(ListView):

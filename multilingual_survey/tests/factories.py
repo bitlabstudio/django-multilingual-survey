@@ -42,3 +42,4 @@ class SurveyResponseFactory(factory.DjangoModelFactory):
     FACTORY_FOR = models.SurveyResponse
 
     answer = factory.RelatedFactory(SurveyAnswerFactory)
+    session_id = factory.Sequence(lambda n: 'session_id{0}'.format(n))

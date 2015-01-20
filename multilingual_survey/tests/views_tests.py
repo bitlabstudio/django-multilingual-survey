@@ -19,7 +19,9 @@ class SurveyReportAdminViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     def setUp(self):
         self.admin = UserFactory(is_staff=True)
         self.user = UserFactory()
-        self.survey = factories.SurveyFactory()
+        self.question = factories.SurveyQuestionFactory()
+        self.survey = self.question.survey
+        self.answer = factories.SurveyAnswerFactory(question=self.question)
 
     def test_view(self):
         self.should_redirect_to_login_when_anonymous()
@@ -27,6 +29,8 @@ class SurveyReportAdminViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         self.redirects(user=self.user, to='{0}?next={1}'.format(
                        settings.LOGIN_URL, self.get_url()))
         self.is_callable(user=self.admin)
+        self.is_callable(user=self.admin, data={'answer': 999})
+        self.is_callable(user=self.admin, data={'answer': self.answer.pk})
 
 
 class SurveyReportListViewTestCase(ViewRequestFactoryTestMixin, TestCase):

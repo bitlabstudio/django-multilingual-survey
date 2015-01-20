@@ -1,23 +1,56 @@
 {% extends "base.html" %}
-{% load i18n position_tags %}
+{% load i18n position_tags survey_tags %}
 
-{% block title %}{{ object.title }}{% endblock %}
+{% block title %}{{ object }}{% endblock %}
 {% block main %}
-    <h1>{{ object.title }}</h1>
+    <h1>{{ object }}</h1>
+    {% if current_answer %}
+        <a class="btn btn-default" href=".">{% trans "Show all" %}</a>
+    {% endif %}
     {% for question in object.questions.all|order_by_position %}
-        <h2>{{ question.title }}</h2>
-        <ul>
-            {% for answer in question.answers.all|order_by_position %}
-                <li>{{ answer.title }}: {{ answer.responses.count }}</li>
-            {% endfor %}
-        </ul>
-        {% if question.has_other_field %}
-            <h3>{% trans "Other responses" %}</h3>
-            <p>
-                {% for response in question.responses.all %}
-                    {% if not forloop.first %}, {% endif %}{{ response.other_answer }}
-                {% endfor %}
-            </p>
-        {% endif %}
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    {% if question.answers.all %}<th></th>{% endif %}
+                    {% for answer in question.answers.all|order_by_position %}
+                        <th>{{ answer }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 300px;">{{ question }}</td>
+                    {% for answer in question.answers.all|order_by_position %}
+                        {% filter_responses answer user_selection session_selection as responses %}
+                        <td>
+                            <span class="badge badge-default">
+                                {% if not current_answer %}
+                                    <a href="?answer={{ answer.pk }}">
+                                {% endif %}
+                                {{ responses.count }}
+                                {% if not current_answer %}
+                                    </a>
+                                {% endif %}
+                            </span>
+                        </td>
+                    {% endfor %}
+                    {% if not question.answers.all %}
+                        <td class="text-muted">{% trans "Free text answer given." %}</td>
+                    {% endif %}
+                </tr>
+                {% if question.has_other_field %}
+                    <tr>
+                        <td class="text-muted">{% trans "Other responses" %}</td>
+                        <td colspan="{{ question.answers.count }}">
+                            {% for response in question.responses.all %}
+                                {% if response.other_answer %}
+                                    <span class="badge badge-default">{{ response.other_answer }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
     {% endfor %}
 {% endblock %}
