@@ -64,6 +64,9 @@ class SurveyForm(forms.Form):
                         question.slug)})
 
                 if question.is_multi_select:
+                    field_kwargs.update({
+                        'widget': forms.CheckboxSelectMultiple,
+                    })
                     self.fields[question.slug] = forms.ModelMultipleChoiceField(
                         **field_kwargs)
                 else:
