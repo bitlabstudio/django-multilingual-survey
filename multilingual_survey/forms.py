@@ -8,6 +8,13 @@ from generic_positions.templatetags.position_tags import order_by_position
 
 from . import models
 
+try:
+    # Django < 1.7.x
+    from django.forms.util import ErrorList
+except ImportError:
+    # Django >= 1.7.x
+    from django.forms.utils import ErrorList
+
 
 class SurveyForm(forms.Form):
     """
@@ -20,7 +27,7 @@ class SurveyForm(forms.Form):
     """
     def __init__(self, user, session_key, survey, data=None, files=None,
                  auto_id='id_%s', prefix=None, initial=None, label_suffix=':',
-                 error_class=forms.util.ErrorList, empty_permitted=False):
+                 error_class=ErrorList, empty_permitted=False):
         """
         Based on the given Survey, adds all necessary fields dynamically.
 
