@@ -2,10 +2,9 @@
 from django.conf import settings
 from django.test import TestCase
 
-from django_libs.tests.factories import UserFactory
 from django_libs.tests.mixins import ViewRequestFactoryTestMixin
+from mixer.backend.django import mixer
 
-from . import factories
 from .. import views
 
 
@@ -17,11 +16,14 @@ class SurveyReportAdminViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         return {'slug': self.survey.slug}
 
     def setUp(self):
-        self.admin = UserFactory(is_staff=True)
-        self.user = UserFactory()
-        self.question = factories.SurveyQuestionFactory()
+        self.admin = mixer.blend('auth.User', is_staff=True)
+        self.user = mixer.blend('auth.User')
+        self.question = mixer.blend(
+            'multilingual_survey.SurveyQuestionTranslation').master
         self.survey = self.question.survey
-        self.answer = factories.SurveyAnswerFactory(question=self.question)
+        self.answer = mixer.blend(
+            'multilingual_survey.SurveyAnswerTranslation',
+            question=self.question).master
 
     def test_view(self):
         self.should_redirect_to_login_when_anonymous()
@@ -38,9 +40,10 @@ class SurveyReportListViewTestCase(ViewRequestFactoryTestMixin, TestCase):
     view_class = views.SurveyReportListView
 
     def setUp(self):
-        self.admin = UserFactory(is_staff=True)
-        self.user = UserFactory()
-        self.survey = factories.SurveyFactory()
+        self.admin = mixer.blend('auth.User', is_staff=True)
+        self.user = mixer.blend('auth.User')
+        self.survey = mixer.blend(
+            'multilingual_survey.SurveyTranslation').master
 
     def test_view(self):
         self.should_redirect_to_login_when_anonymous()
@@ -58,7 +61,8 @@ class SurveyViewTestCase(ViewRequestFactoryTestMixin, TestCase):
         return {'slug': self.survey.slug}
 
     def setUp(self):
-        self.survey = factories.SurveyFactory()
+        self.survey = mixer.blend(
+            'multilingual_survey.SurveyTranslation').master
         self.data = {}
 
     def test_view(self):

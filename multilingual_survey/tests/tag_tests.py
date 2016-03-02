@@ -1,7 +1,8 @@
 """Tests for the templatetags of the ``multilingual_survey`` app."""
 from django.test import TestCase
 
-from . import factories
+from mixer.backend.django import mixer
+
 from ..templatetags import survey_tags
 
 
@@ -10,10 +11,13 @@ class FilterResponsesTestCase(TestCase):
     longMessage = True
 
     def test_tag(self):
-        answer = factories.SurveyAnswerFactory()
-        response_1 = factories.SurveyResponseFactory(question=answer.question)
+        answer = mixer.blend(
+            'multilingual_survey.SurveyAnswerTranslation').master
+        response_1 = mixer.blend('multilingual_survey.SurveyResponse',
+                                 question=answer.question)
         response_1.answer.add(answer)
-        response_2 = factories.SurveyResponseFactory(question=answer.question)
+        response_2 = mixer.blend('multilingual_survey.SurveyResponse',
+                                 question=answer.question)
         response_2.answer.add(answer)
         self.assertEqual(
             survey_tags.filter_responses(answer, [], []).count(), 2,

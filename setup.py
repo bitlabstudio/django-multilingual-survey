@@ -34,12 +34,11 @@ import multilingual_survey as app
 
 dev_requires = [
     'flake8',
-    'south',
 ]
 
 install_requires = [
     'django',
-    'django-hvad>=0.4',
+    'django-hvad>=1.0',
     'django-generic-positions',
 ]
 

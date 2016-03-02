@@ -1,5 +1,6 @@
 === (ongoing) ===
 
+- prepared app for Django 1.9
 - added answer filter to admin view
 - added checkbox widget for multiselect answers
 - ordering answers by position
