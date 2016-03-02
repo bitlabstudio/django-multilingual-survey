@@ -38,6 +38,7 @@ dev_requires = [
 
 install_requires = [
     'django',
+    'django-libs',
     'django-hvad>=1.0',
     'django-generic-positions',
 ]
