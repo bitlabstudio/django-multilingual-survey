@@ -50,9 +50,10 @@ class SurveyForm(forms.Form):
         self.empty_permitted = empty_permitted
         self._errors = None
         self._changed_data = None
-        # to maintain the order of questions, that by default order by position
+        # To maintain the order of questions, that by default order by position
         # field, we use the OrderedDict for adding fields.
         self.fields = OrderedDict()
+        self._bound_fields_cache = {}
         self.initial = initial or self.get_initial()
 
         for question in order_by_position(self.survey.questions.all()):
@@ -74,26 +75,28 @@ class SurveyForm(forms.Form):
                     field_kwargs.update({
                         'widget': forms.CheckboxSelectMultiple,
                     })
-                    self.fields[question.slug] = \
-                        forms.ModelMultipleChoiceField(**field_kwargs)
+                    self.fields.update({
+                        question.slug: forms.ModelMultipleChoiceField(
+                            **field_kwargs)})
                 else:
-                    self.fields[question.slug] = forms.ModelChoiceField(
-                        **field_kwargs)
+                    self.fields.update({
+                        question.slug: forms.ModelChoiceField(**field_kwargs)})
 
                 # Then we add the `other` field for the question
                 if question.has_other_field:
                     field_name = u'{0}_other'.format(question.slug)
-                    self.fields[field_name] = forms.CharField(
-                        label=_('Other'), max_length=2014, required=False)
+                    self.fields.update({
+                        field_name: forms.CharField(
+                            label=_('Other'), max_length=2014,
+                            required=False)})
                     self.fields[field_name].widget.attrs.update({
                         'data-class': 'other-field'})
             elif question.has_other_field:
-                self.fields[u'{0}_other'.format(question.slug)] = \
-                    forms.CharField(
-                        label=question.__unicode__(),
-                        max_length=2014,
+                self.fields.update({
+                    u'{0}_other'.format(question.slug): forms.CharField(
+                        label=question.__unicode__(), max_length=2014,
                         required=question.required,
-                        initial=self.initial.get(question.slug))
+                        initial=self.initial.get(question.slug))})
 
     def get_initial(self):
         initial = {}

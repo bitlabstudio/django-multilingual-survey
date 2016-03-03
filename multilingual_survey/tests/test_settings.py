@@ -20,6 +20,11 @@ ROOT_URLCONF = 'multilingual_survey.tests.urls'
 
 LANGUAGE_CODE = 'en'
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('de', 'Deutsch'),
+]
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(APP_ROOT, '../app_static')
 MEDIA_ROOT = os.path.join(APP_ROOT, '../app_media')
@@ -42,6 +47,14 @@ TEMPLATES = [{
     }
 }]
 
+MIDDLEWARE_CLASSES = (
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+)
 
 EXTERNAL_APPS = [
     'django.contrib.admin',

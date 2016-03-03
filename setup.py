@@ -40,7 +40,7 @@ install_requires = [
     'django',
     'django-libs',
     'django-hvad>=1.0',
-    'django-generic-positions',
+    'django-generic-positions>=0.2.1',
 ]
 
 
