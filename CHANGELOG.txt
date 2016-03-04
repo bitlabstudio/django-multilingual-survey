@@ -2,6 +2,7 @@
 
 === 0.3.X ===
 
+- fixed foreign keys in admin
 - prepared app for Django 1.9
 - added answer filter to admin view
 - added checkbox widget for multiselect answers

@@ -19,23 +19,29 @@ class SurveyAdmin(TranslatableAdmin):
 
 class SurveyQuestionAdmin(GenericPositionsAdmin, TranslatableAdmin):
     """Custom admin for the ``SurveyQuestion`` model."""
-    list_display = ['get_title', 'slug', 'is_multi_select',
+    list_display = ['get_title', 'get_survey', 'slug', 'is_multi_select',
                     'has_other_field', 'required']
-    list_filter = ['survey', ]
 
     def get_title(self, obj):
         return obj.__unicode__()
     get_title.short_description = _('Title')
+
+    def get_survey(self, obj):
+        return obj.survey
+    get_survey.short_description = _('Survey')
 
 
 class SurveyAnswerAdmin(GenericPositionsAdmin, TranslatableAdmin):
     """Custom admin for the ``SurveyAnswer`` model."""
-    list_display = ['get_title', 'slug']
-    list_filter = ['question', ]
+    list_display = ['get_title', 'slug', 'get_question']
 
     def get_title(self, obj):
         return obj.__unicode__()
     get_title.short_description = _('Title')
+
+    def get_question(self, obj):
+        return obj.question
+    get_question.short_description = _('Question')
 
 
 class SurveyResponseAdmin(admin.ModelAdmin):
