@@ -61,7 +61,7 @@ class SurveyForm(forms.Form):
             queryset = question.answers.all()
             if queryset:
                 field_kwargs = {
-                    'label': question.__unicode__(),
+                    'label': question,
                     'queryset': queryset.order_by(
                         'generic_position__position'),
                     'required': False,
@@ -94,7 +94,7 @@ class SurveyForm(forms.Form):
             elif question.has_other_field:
                 self.fields.update({
                     u'{0}_other'.format(question.slug): forms.CharField(
-                        label=question.__unicode__(), max_length=2014,
+                        label=question.__str__(), max_length=2014,
                         required=question.required,
                         initial=self.initial.get(question.slug))})
 

@@ -1,0 +1,4 @@
+django
+django-generic-positions
+django-hvad
+django-libs

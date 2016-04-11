@@ -1,13 +1,8 @@
-django
-django-nose
-django-generic-positions
-django-hvad
-factory_boy
 coverage
 django-coverage
-django-libs
 ipdb
 flake8
-fabric
+fabric3
 mixer
 mock
+tox

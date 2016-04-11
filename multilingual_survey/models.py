@@ -1,6 +1,7 @@
 """Models for the multilingual_survey app"""
 from django.contrib.contenttypes import fields
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from django_libs.models_mixins import TranslationModelMixin
@@ -133,6 +134,7 @@ class SurveyAnswer(TranslationModelMixin, TranslatableModel):
         unique_together = ('slug', 'question')
 
 
+@python_2_unicode_compatible
 class SurveyResponse(models.Model):
     """
     Ties a user response to an answer.
@@ -187,7 +189,7 @@ class SurveyResponse(models.Model):
         auto_now_add=True,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return u'Answer to {0} from {1}'.format(
             self.question, self.user.email if self.user else '(?)')
 

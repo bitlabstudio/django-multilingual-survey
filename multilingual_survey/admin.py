@@ -13,7 +13,7 @@ class SurveyAdmin(TranslatableAdmin):
     list_display = ['get_title', 'slug']
 
     def get_title(self, obj):
-        return obj.__unicode__()
+        return obj.__str__()
     get_title.short_description = _('Title')
 
 
@@ -23,7 +23,7 @@ class SurveyQuestionAdmin(GenericPositionsAdmin, TranslatableAdmin):
                     'has_other_field', 'required']
 
     def get_title(self, obj):
-        return obj.__unicode__()
+        return obj.__str__()
     get_title.short_description = _('Title')
 
     def get_survey(self, obj):
@@ -36,7 +36,7 @@ class SurveyAnswerAdmin(GenericPositionsAdmin, TranslatableAdmin):
     list_display = ['get_title', 'slug', 'get_question']
 
     def get_title(self, obj):
-        return obj.__unicode__()
+        return obj.__str__()
     get_title.short_description = _('Title')
 
     def get_question(self, obj):
@@ -52,9 +52,9 @@ class SurveyResponseAdmin(admin.ModelAdmin):
         answer_string = ''
         for answer in obj.answer.all():
             if answer_string == '':
-                answer_string += answer.__unicode__()
+                answer_string += answer.__str__()
             else:
-                answer_string += u', {0}'.format(answer.__unicode__())
+                answer_string += u', {0}'.format(answer.__str__())
         if obj.other_answer:
             if answer_string == '':
                 answer_string += obj.other_answer
