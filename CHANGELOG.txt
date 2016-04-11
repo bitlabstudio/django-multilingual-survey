@@ -1,9 +1,10 @@
-=== (ongoing) ===
+=== 1.X.X ===
+
+- prepared app for Django 1.9 and Python 3.5
 
 === 0.3.X ===
 
 - fixed foreign keys in admin
-- prepared app for Django 1.9 and Python 3.5
 - added answer filter to admin view
 - added checkbox widget for multiselect answers
 - ordering answers by position
